@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>编辑英雄</title>
+        <!-- 导包 -->
+        <script src="./lib/js/jquery-1.12.4.js"></script>
+        <script src="./lib/js/bootstrap.js"></script>
+        <link rel="stylesheet" href="./lib/css/bootstrap.min.css">
+        <script src="./lib/js/template-web.js"></script>
+        <style>
+            .wrap {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: url('images/bg03.jpg') center bottom no-repeat;
+                overflow: auto;
+            }
+
+            .navbar-brand {
+                padding: 10px 15px;
+            }
+
+            .page-title {
+                font-size: 16px;
+                font-weight: bold;
+            }
+
+            .file-input {
+                outline: none;
+                display: inline-block;
+                margin-top: 5px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            .form-horizontal {
+                margin-top: 10px;
+            }
+
+            .logout {
+                font-weight: 900;
+                font-size: 20px;
+                color: #ff000d;
+                text-decoration: none;
+            }
+
+            .logout:hover {
+                text-decoration: none;
+                color: yellowgreen;
+            }
+
+            .preview {
+                width: 100px;
+                height: 100px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="wrap">
+            <nav class="navbar  navbar-inverse navbar-static-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                data-target="#mymenu">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#"><img src="images/logo.png"></a>
+                    </div>
+                </div>
+            </nav>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading clearfix">
+                                <div class="row">
+                                    <div class="col-md-6 page-title">英雄信息修改</div>
+                                    <div class="col-md-6 text-right">当前位置：首页 &gt; 英雄信息修改</div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <form action="#" method="" class="form-horizontal" id="form">
+                                    <input type="hidden" name="id" id="heroId">
+                                    <div class="form-group">
+                                        <label for="heroName" class="col-sm-2 control-label">姓名</label>
+                                        <div class="col-sm-10">
+                                            <input required type="text" class="form-control" id="heroName" name="name"
+                                                   placeholder="请输入姓名"
+                                                   value="盖伦"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="skillName" class="col-sm-2 control-label">技能</label>
+                                        <div class="col-sm-10">
+                                            <input required type="text" class="form-control" id="skillName" name="skill"
+                                                   placeholder="请输入技能"
+                                                   value="躲草丛"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="heroIcon" class="col-sm-2 control-label">头像</label>
+                                        <div class="col-sm-10">
+                                            <input required type="file" class="file-input" id="heroIcon" name="icon"/>
+                                            <!-- 预览的标签 -->
+                                            <img src="" class="preview" alt="" style="height: 100px;"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <button type="submit" class="btn btn-primary btn-save">
+                                                保存
+                                            </button>
+                                            <button onclick="window.history.back()" type="submit"
+                                                    class="btn btn-cancel">取消
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(function () {
+                /* 1.获取从index.html传递过来的参数id */
+                let getId = window.location.search.split('=')[1];
+
+                /* 2.ajax请求英雄详细信息 */
+                $.ajax({
+                    url: 'http://localhost:4399/hero/id',
+                    data: {
+                        id: getId
+                    },
+                    success: function (backData) {
+                        console.log(backData)
+                        $('#heroName').val(backData.data.name)
+                        $('#skillName').val(backData.data.skill)
+                        $('#heroId').val(backData.data.id)
+                        $('.preview').attr('src', backData.data.icon)
+                    }
+                })
+
+
+                /* 3.文件预览 */
+                //(1)给file表单注册onchange事件
+                $('#heroIcon').on('change', function () {
+                    console.log(1)
+                    let file = this.files[0]
+                    let url = URL.createObjectURL(file)
+                    $('.preview').attr('src', url)
+                })
+
+
+                //(2)获取选择的文件
+
+                //(3)将文件生成url
+
+                //(4)使用img标签的src属性显示url
+
+
+                /* 4.文件上传 */
+                //点击按钮获取更改只有的input中的值
+                $('.btn-save').on('click', function (e) {
+                    e.preventDefault()
+                    //获取更改的值
+                    let form = document.getElementById('form')
+                    let formObj = new FormData(form)
+                    //第一种追加FormData属性的方法
+                    // formObj.append('id',getId)
+                    // 上面第二种利用隐藏域的方法
+                    $.ajax({
+                        type:'post',
+                        url: 'http://localhost:4399/hero/update',
+                        data: formObj,
+                        contentType:false,
+                        processData:false,
+                        success:function (backData) {
+                            console.log(backData)
+                           if(backData.code==202){
+                               alert('编辑成功')
+                               window.location.href ='./index.html'
+                           }
+                        }
+
+                    })
+
+
+                })
+
+
+                //(1)阻止表单默认跳转
+
+                //(2)使用formdata处理带文件参数
+                /*
+                (1)formdata只能获取有name属性的表单参数
+                (2)如果 formdata获取的参数  <  接口文档参数
+                (3)解决方案：使用append() 手动追加参数
+                */
+
+
+                //(3)ajax发送请求
+
+
+                //跳转首页
+
+
+            })
+        </script>
+    </body>
+
+</html>

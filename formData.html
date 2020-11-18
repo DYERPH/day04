@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <script src="jquery-1.12.4.js"></script>
+
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <form action="">
+            <input  type="text" name="name"> <br>
+            <input  type="text" name="skill"> <br>
+            <input  type="file" name="icon"><br>
+        </form>
+        <button class="btn">提交</button>
+        <script>
+            //原生发送ajax请求
+          //
+          // document.getElementsByClassName('btn')[0].onclick =function () {
+          //     let form = document.getElementsByTagName('form')[0];
+          //     //创建FormData对象
+          //     let formObj = new FormData(form);
+          //     //请求ajax
+          //     let ajaxObj = new XMLHttpRequest();
+          //     ajaxObj.open('post','http://localhost:4399/hero/add')
+          //     //不需要写请求头 因为发送的对象 而不是unl数据
+          //     ajaxObj.onload = function () {
+          //         console.log(ajaxObj.response)
+          //     }
+          //     ajaxObj.send(formObj)
+          // }
+            $('.btn').on('click',function () {
+                let form = $('form')[0];
+                let formObj = new  FormData(form)
+                $.ajax({
+                    type:'post',
+                    url:'http://localhost:4399/hero/add',
+                    data:formObj,
+                    contentType:false,//不要发送请求头
+                    processData:false,//不要把传递的fd数据转为key=value这种格式的字符串。
+                    success:function (backData) {
+                        console.log(backData)
+                    }
+
+                })
+
+            })
+        </script>
+    </body>
+</html>
